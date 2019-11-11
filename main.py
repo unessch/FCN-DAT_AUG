@@ -1,5 +1,3 @@
-from scipy.interpolate import CubicSpline      # for warping
-from google.colab import files
 import os
 from __future__ import print_function
 from keras.models import Model
@@ -28,6 +26,14 @@ fname  = 'Earthquakes'
 
 x_train, y_train = readucr(fname+'_TRAIN')
 x_test, y_test = readucr(fname+'_TEST')
+
+#Add generated data
+with open('generated-P2.pkl', 'rb') as g1: 
+        sig_gen = pickle.load(g1)
+x_gen = sig_gen[:206,1:]
+y_gen = sig_gen[:206,0]
+x_train = np.concatenate((x_train, x_gen), axis=0)
+y_train = np.concatenate((y_train, y_gen), axis=0)
 
 nb_classes = len(np.unique(y_test))
 y_train = (y_train - y_train.min())/(y_train.max()-y_train.min())*(nb_classes-1)
@@ -127,4 +133,3 @@ for i in range(len(test)):
 print("The mean in train set is : " +str(np.asarray(train).mean()))
 print("The mean in validation set is : " +str(np.asarray(val).mean()))
 print("The mean in test set is : " +str(np.asarray(test).mean()))
-
