@@ -27,6 +27,10 @@ fname  = 'Earthquakes'
 x_train, y_train = readucr(fname+'_TRAIN')
 x_test, y_test = readucr(fname+'_TEST')
 
+input_array=np.array(x_train)
+x_train=(input_array-np.min(input_array))/np.ptp(input_array)
+x_test = (x_test - np.min(input_array))/(np.max(input_array)-np.min(input_array))
+
 #Add generated data
 with open('generated-P2.pkl', 'rb') as g1: 
         sig_gen = pickle.load(g1)
@@ -36,17 +40,11 @@ x_train = np.concatenate((x_train, x_gen), axis=0)
 y_train = np.concatenate((y_train, y_gen), axis=0)
 
 nb_classes = len(np.unique(y_test))
-y_train = (y_train - y_train.min())/(y_train.max()-y_train.min())*(nb_classes-1)
-y_test = (y_test - y_test.min())/(y_test.max()-y_test.min())*(nb_classes-1)
 
 Y_train = np_utils.to_categorical(y_train, nb_classes)
 Y_test = np_utils.to_categorical(y_test, nb_classes)
 
-x_train_mean = x_train.mean()
-x_train_std = x_train.std()
-x_train = (x_train - x_train_mean)/(x_train_std)
 
-x_test = (x_test - x_train_mean)/(x_train_std)
 x_train = x_train.reshape(x_train.shape + (1,1,))
 x_test = x_test.reshape(x_test.shape + (1,1,))
 
